@@ -26,6 +26,7 @@ const config = {
   ENCRYPTION_KEY: env.ENCRYPTION_KEY || "",
   REDIS_URL: env.REDIS_URL || "",
   CACHE_DRIVER: env.CACHE_DRIVER || "memory",
+  CACHE_SQLITE_PATH: env.CACHE_SQLITE_PATH || "./storage/cache/cache.sqlite",
 
   FILESYSTEM_DISK: env.FILESYSTEM_DISK || "local",
   FILESYSTEM_PATH: env.FILESYSTEM_PATH || ".",

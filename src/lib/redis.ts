@@ -17,7 +17,7 @@ export interface CacheClient {
 
 let redisClient: CacheClient;
 
-if (config.CACHE_DRIVER && config.CACHE_DRIVER.toLowerCase() === "memory") {
+if (!config.CACHE_DRIVER || config.CACHE_DRIVER.toLowerCase() !== "redis") {
   /* eslint-disable @typescript-eslint/no-unused-vars */
   redisClient = {
     isOpen: false,

@@ -1,10 +1,17 @@
 import redisClient from "./redis";
 import config from "@/config";
 import NodeCache from "node-cache";
+import {
+  sqliteSet,
+  sqliteGet,
+  sqliteDel,
+  sqliteIncr,
+  sqliteFlush,
+} from "./sqliteCache";
 
-const useRedis = !!(
-  config.CACHE_DRIVER && config.CACHE_DRIVER.toLowerCase() === "redis"
-);
+const driver = (config.CACHE_DRIVER || "memory").toLowerCase();
+const useRedis = driver === "redis";
+const useSqlite = driver === "sqlite";
 const nodeCache = new NodeCache({ stdTTL: 0, checkperiod: 60 });
 
 /**
@@ -32,6 +39,15 @@ export async function setCache(
     }
   }
 
+  if (useSqlite) {
+    try {
+      sqliteSet(key, str, ttlSeconds);
+      return true;
+    } catch {
+      // fall through to memory fallback
+    }
+  }
+
   nodeCache.set(key, str, ttlSeconds);
   return true;
 }
@@ -46,6 +62,14 @@ export async function getCache(key: string): Promise<string | null> {
         const v = await redisClient.get(key);
         return v ?? null;
       }
+    } catch {
+      // fallback
+    }
+  }
+
+  if (useSqlite) {
+    try {
+      return sqliteGet(key);
     } catch {
       // fallback
     }
@@ -82,6 +106,14 @@ export async function incrCache(
     }
   }
 
+  if (useSqlite) {
+    try {
+      return sqliteIncr(key, windowSeconds);
+    } catch {
+      // fall through to memory fallback
+    }
+  }
+
   const cur = nodeCache.get<number>(key) ?? 0;
   const expireAt = nodeCache.getTtl(key);
   const ttl = expireAt
@@ -107,6 +139,15 @@ export async function deleteCache(key: string): Promise<boolean> {
     }
   }
 
+  if (useSqlite) {
+    try {
+      sqliteDel(key);
+      return true;
+    } catch {
+      // fallback
+    }
+  }
+
   nodeCache.del(key);
   return true;
 }
@@ -121,6 +162,15 @@ export async function flushCache(): Promise<boolean> {
         await redisClient.flushAll();
         return true;
       }
+    } catch {
+      // fallback
+    }
+  }
+
+  if (useSqlite) {
+    try {
+      sqliteFlush();
+      return true;
     } catch {
       // fallback
     }
