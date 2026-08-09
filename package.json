@@ -49,7 +49,6 @@
     "typescript-eslint": "^8.62.1"
   },
   "name": "express-admin-api",
-  "type": "module",
   "version": "1.0.0",
   "scripts": {
     "dev": "tsx watch --env-file=.env src/server.ts",
