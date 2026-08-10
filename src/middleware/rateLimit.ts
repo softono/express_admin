@@ -3,16 +3,16 @@ import { rateLimit } from "@/lib/rateLimit";
 import { getClientIp } from "@/utils/clientInfo";
 
 // Mirrors the Next.js proxy rate-limit map. Prefix order matters:
-// "/api/auth/login" is checked first, so login-otp also falls under the
+// "/auth/login" is checked first, so login-otp also falls under the
 // 10-request bucket, exactly like the original proxy.
-const LOGIN_PREFIXES = ["/api/auth/login", "/api/admin/auth/login"];
+const LOGIN_PREFIXES = ["/auth/login"];
 const STRICT_PREFIXES = [
-  "/api/auth/otp",
-  "/api/auth/login-otp",
-  "/api/auth/tfa",
-  "/api/auth/forgot-password",
-  "/api/auth/reset-password",
-  "/api/auth/verify-account",
+  "/auth/otp",
+  "/auth/login-otp",
+  "/auth/tfa",
+  "/auth/forgot-password",
+  "/auth/reset-password",
+  "/auth/verify-account",
 ];
 
 export async function apiRateLimit(

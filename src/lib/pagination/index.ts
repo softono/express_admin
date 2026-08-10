@@ -52,6 +52,11 @@ export function parsePaginationQuery(
   return body;
 }
 
+// Builds the same shape from an Express request's originalUrl, for GET list routes.
+export function paginationBody(req: { originalUrl: string }): Record<string, unknown> {
+  return parsePaginationQuery(new URL(req.originalUrl, "http://localhost").searchParams);
+}
+
 /**
  * Generic, reusable pagination executor — the TS port of the Laravel
  * `Pagination::getData` helper.

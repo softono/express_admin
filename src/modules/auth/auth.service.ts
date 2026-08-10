@@ -21,7 +21,6 @@ import { getDeviceUid } from "@/utils/authCookie";
 import { logActivity } from "@/modules/account/user-activity.service";
 import { dateTimeFormat } from "@/lib/date";
 import type { ApiResult } from "@/types";
-import { ADMIN_ROLES } from "@/modules/account/user.constants";
 import {
   findCredentialAccountByUserId,
   updateCredentialPasswordByUserId,
@@ -40,15 +39,11 @@ async function authenticateCredentials(
   req: Request,
   body: { email: string; password: string; remember?: boolean },
   clientInfo: ClientInfo,
-  options: { requireAdmin?: boolean } = {},
 ): Promise<ApiResult> {
   const { email, password, remember } = body;
 
   const user = await getUserByEmail(email);
-  const roleOk =
-    !options.requireAdmin ||
-    (user && (ADMIN_ROLES as readonly string[]).includes(user.role || ""));
-  if (!user || !roleOk) {
+  if (!user) {
     await dummyPasswordCheck();
     return {
       http_status: 401,
@@ -131,14 +126,6 @@ export async function login(
   clientInfo: ClientInfo,
 ): Promise<ApiResult> {
   return authenticateCredentials(req, body, clientInfo);
-}
-
-export async function adminLogin(
-  req: Request,
-  body: { email: string; password: string; remember?: boolean },
-  clientInfo: ClientInfo,
-): Promise<ApiResult> {
-  return authenticateCredentials(req, body, clientInfo, { requireAdmin: true });
 }
 
 export async function logout(token: string): Promise<ApiResult> {
