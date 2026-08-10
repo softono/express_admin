@@ -4,16 +4,15 @@ const trimSlash = (value: string = ""): string => value.replace(/\/+$/, "");
 const normalizeUrl = (value?: string, fallback: string = ""): string =>
   trimSlash((value || fallback).trim());
 
-const appOrigin = normalizeUrl(env.APP_URL || "http://localhost:5174");
+const appOrigin = normalizeUrl(env.BASE_URL || "http://localhost:5174");
 const apiOrigin = normalizeUrl(env.API_URL || "http://localhost:4001");
 
 const config = {
   APP_NAME: env.APP_NAME || "Next",
   APP_UID: env.APP_UID || "next",
   APP_LOGO: env.APP_LOGO || "",
-  BASE_URL: env.BASE_URL || appOrigin,
   // Frontend origin — used in email links and OAuth final redirects.
-  APP_URL: appOrigin,
+  BASE_URL: env.BASE_URL || appOrigin,
   // Own origin — used to build file URLs.
   API_URL: apiOrigin,
   PORT: Number(env.PORT) || 4001,

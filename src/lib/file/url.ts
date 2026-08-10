@@ -23,7 +23,7 @@ export async function getPrivateFileUrl(
 ): Promise<string> {
   if (config.FILESYSTEM_DISK === "local") {
     const filePath = getFileSystemPath(type) + file_name;
-    return `${config.APP_URL}/api/file?p=${btoa(filePath)}`;
+    return `${config.BASE_URL}/file?p=${btoa(filePath)}`;
   } else {
     const { getS3PresignedUrl } = await import("./providers/s3");
     return getS3PresignedUrl(file_name, type);

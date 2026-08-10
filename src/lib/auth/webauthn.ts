@@ -13,14 +13,14 @@ import type {
 } from "@simplewebauthn/server";
 import config from "@/config";
 
-const APP_URL = config.WEBAUTHN_ORIGIN || config.APP_URL;
+const BASE_URL = config.WEBAUTHN_ORIGIN || config.BASE_URL;
 
 function getRpId(): string {
-  return new URL(APP_URL).hostname;
+  return new URL(BASE_URL).hostname;
 }
 
 function getOrigin(): string {
-  return APP_URL;
+  return BASE_URL;
 }
 
 function getRpName(): string {
