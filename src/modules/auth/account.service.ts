@@ -1,5 +1,5 @@
 import type { Request } from "express";
-import { USER_STATUS } from "@/modules/account/user.constants";
+import { ADMIN_ROLES, USER_STATUS } from "@/modules/account/user.constants";
 import {
   hashPassword,
   issueOtp,
@@ -154,7 +154,7 @@ export async function loginWithOtp(
   const { email, otp, remember } = body;
 
   const user = await getUserByEmail(email);
-  if (!user) {
+  if (!user || !(ADMIN_ROLES as readonly string[]).includes(user.role || "")) {
     return { http_status: 401, status: 0, message: "Invalid email or OTP" };
   }
   if (user.status !== USER_STATUS.ACTIVE) {

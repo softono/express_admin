@@ -16,7 +16,7 @@ import type {
   RegistrationResponseJSON,
   AuthenticationResponseJSON,
 } from "@simplewebauthn/server";
-import { USER_STATUS } from "@/modules/account/user.constants";
+import { ADMIN_ROLES, USER_STATUS } from "@/modules/account/user.constants";
 import {
   findPasskeysByUser,
   listPasskeysByUser,
@@ -139,6 +139,9 @@ export async function loginVerify(
   const user = await getUserById(pk.user_id);
   if (!user || user.status !== USER_STATUS.ACTIVE) {
     return { http_status: 403, status: 0, message: "Account disabled" };
+  }
+  if (!(ADMIN_ROLES as readonly string[]).includes(user.role || "")) {
+    return { http_status: 401, status: 0, message: "Invalid credentials" };
   }
 
   const { token } = await issueSession(req, user.id, { remember: true });

@@ -1,5 +1,5 @@
 import type { Request } from "express";
-import { USER_STATUS } from "@/modules/account/user.constants";
+import { ADMIN_ROLES, USER_STATUS } from "@/modules/account/user.constants";
 import {
   getUserByEmail,
   toSafeUser,
@@ -43,7 +43,7 @@ async function authenticateCredentials(
   const { email, password, remember } = body;
 
   const user = await getUserByEmail(email);
-  if (!user) {
+  if (!user || !(ADMIN_ROLES as readonly string[]).includes(user.role || "")) {
     await dummyPasswordCheck();
     return {
       http_status: 401,
